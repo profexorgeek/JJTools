@@ -38,5 +38,6 @@ namespace Toolchest
             return meta;
         }
 
+            ConsoleLog.Instance.Info($"Extracted meta from {metaCount}/{allMarkdownFiles.Count} documents");
     }
 }

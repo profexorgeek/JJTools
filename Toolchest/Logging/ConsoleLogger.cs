@@ -4,24 +4,10 @@ using System.Text;
 
 namespace Toolchest.Logging
 {
-    public class ConsoleLog : ILogger
+    public class ConsoleLogger : ILogger
     {
-        public static ConsoleLog instance;
-        public static ConsoleLog Instance
-        {
-            get
-            {
-                if(instance == null)
-                {
-                    instance = new ConsoleLog();
-                }
-                return instance;
-            }
-        }
 
         public LogLevels Level { get; set; }
-
-        private ConsoleLog() { }
 
         private void Write(LogLevels msgLevel, string message)
         {

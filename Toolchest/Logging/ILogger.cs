@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Toolchest.Logging
 {
-    interface ILogger
+    public interface ILogger
     {
         public LogLevels Level { get; set; }
 

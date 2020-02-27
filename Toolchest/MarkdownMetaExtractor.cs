@@ -18,7 +18,7 @@ namespace Toolchest
         // markdown page's YAML header
         public static PageMeta ExtractMeta(string path)
         {
-
+            Log.Instance.Info($"Extracting metadata from {path}");
             var deserializer = new Deserializer();
             PageMeta meta = null;
             var fileText = File.ReadAllText(path).Replace("\r", "");
@@ -32,6 +32,7 @@ namespace Toolchest
             meta = deserializer.Deserialize<PageMeta>(yaml);
             if(meta == null)
             {
+                Log.Instance.Warn($"No metadata was found for {path}.");
                 meta = new PageMeta();
             }
             meta.Path = path;
@@ -44,6 +45,8 @@ namespace Toolchest
         static void GetPageMetadataFromDirectory(string directoryPath, string outputFilePath)
         {
             var allMarkdownFiles = new DirectoryCrawler().GetFilesRecursively(directoryPath);
+            Log.Instance.Info($"Found {allMarkdownFiles.Count} markdown files.");
+
             List<PageMeta> metas = new List<PageMeta>();
             int metaCount = 0;
             foreach (var f in allMarkdownFiles)
@@ -62,7 +65,7 @@ namespace Toolchest
                 csv.WriteRecords(metas);
             }
 
-            ConsoleLog.Instance.Info($"Extracted meta from {metaCount}/{allMarkdownFiles.Count} documents");
+            Log.Instance.Info($"Extracted meta from {metaCount}/{allMarkdownFiles.Count} documents");
         }
 
     }

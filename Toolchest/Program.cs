@@ -16,8 +16,7 @@ namespace Toolchest
             Log.Instance = new ConsoleLogger();
             Log.Instance.Level = LogLevels.Info;
 
-            // Call whatever methods need to be called here to
-            // get some grunt-work done!
+            // Call whatever methods need to be called here to get some grunt-work done!
         }
     }
 }

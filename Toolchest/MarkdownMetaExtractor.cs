@@ -42,9 +42,9 @@ namespace Toolchest
 
         // Call this method to find all markdown files (recursively) in a directory and
         // create a CSV with all file metadata
-        static void GetPageMetadataFromDirectory(string directoryPath, string outputFilePath)
+        public static void GetMetaDataCsvFromDirectory(string directoryPath, string outputFilePath)
         {
-            var allMarkdownFiles = new DirectoryCrawler().GetFilesRecursively(directoryPath);
+            var allMarkdownFiles = new DirectoryCrawler().GetFilesRecursively(directoryPath, ".md");
             Log.Instance.Info($"Found {allMarkdownFiles.Count} markdown files.");
 
             List<PageMeta> metas = new List<PageMeta>();

@@ -13,7 +13,7 @@ namespace Toolchest.Logging
         {
             if(msgLevel >= Level)
             {
-                Console.Write($"{msgLevel} - {message}");
+                Console.WriteLine($"{msgLevel} - {message}");
             }
         }
 

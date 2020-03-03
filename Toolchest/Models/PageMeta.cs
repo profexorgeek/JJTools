@@ -46,6 +46,6 @@ namespace Toolchest.Models
         public string Robots { get; set; }
 
         [YamlMember(Alias = "ms.date")]
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
     }
 }

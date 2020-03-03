@@ -75,8 +75,9 @@ namespace Toolchest
                 var parentMeta = new PageMeta
                 {
                     Title = parent.Text,
-                    Description = "",
-                    Date = DateTime.Now,
+                    Description = $"FAQs list for {parent.Text}.",
+                    Date = DateTime.Now.ToString("d"),
+                    Topic = "conceptual",
                     MsAuthor = this.MsAuthor,
                     Author = this.Author,
                     AssetId = Guid.NewGuid().ToString("D")
@@ -106,18 +107,16 @@ namespace Toolchest
                             throw new Exception($"Pandoc conversion failed: " + pandoc.Error.ToString());
                         }
                     }
-                    answerMd = File.ReadAllText(childPath);
+                    answerMd = File.ReadAllText(childPath).CleanMarkdown();
                     File.Delete(htmlFilename);
-
-                    // strip any remaining HTML
-                    answerMd = Regex.Replace(answerMd, "<[^>]+>", "");
 
                     // build the markdown file
                     var childMeta = new PageMeta
                     {
                         Title = child.Faq.TruncateTo(140),
                         Description = child.Ans.TruncateTo(140),
-                        Date = DateTime.Now,
+                        Date = DateTime.Now.ToString("d"),
+                        Topic = "conceptual",
                         MsAuthor = this.MsAuthor,
                         Author = this.Author,
                         AssetId = Guid.NewGuid().ToString("D")
@@ -129,7 +128,7 @@ namespace Toolchest
                     File.WriteAllText(childPath, childSb.ToString());
 
                     // include file in parent
-                    parentSb.Append($"[!INCLUDE [{childMeta.Title}]({childFilename})]\n\n\n");
+                    parentSb.Append($"[!INCLUDE [{childMeta.Title}]({childFilename})]\n\n");
                 }
 
                 // write index file:

@@ -47,5 +47,10 @@ namespace Toolchest.Models
 
         [YamlMember(Alias = "ms.date")]
         public string Date { get; set; }
+
+
+        // Custom Fields
+        [YamlMember(Alias = "ms.faqid")]
+        public string FaqId { get; set; }
     }
 }

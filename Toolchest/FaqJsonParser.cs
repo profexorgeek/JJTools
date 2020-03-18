@@ -12,7 +12,7 @@ using Toolchest.Models;
 namespace Toolchest
 {
     // This class was created to transform a bunch of JSON files containing FAQs
-    // into individual markdown files
+    // into individual markdown files.
     public class FaqJsonParser
     {
         public string MsAuthor { get; set; } = "";
@@ -65,9 +65,15 @@ namespace Toolchest
             {
                 Log.Instance.Debug($"Processing parent: {parent.Id}");
                 var dir = Path.Combine(outputDirectory, parent.Id);
+                var includesDir = Path.Combine(dir, "includes");
                 if(!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
+                }
+
+                if(!Directory.Exists(includesDir))
+                {
+                    Directory.CreateDirectory(includesDir);
                 }
 
                 var parentPath = Path.Combine(dir, "index.md");
@@ -76,6 +82,7 @@ namespace Toolchest
                 {
                     Title = parent.Text,
                     Description = $"FAQs list for {parent.Text}.",
+                    FaqId = parent.Id,
                     Date = DateTime.Now.ToString("d"),
                     Topic = "conceptual",
                     MsAuthor = this.MsAuthor,
@@ -89,12 +96,15 @@ namespace Toolchest
                 {
                     Log.Instance.Debug($"\tProcessing child: {child.Id}");
                     var childFilename = $"{child.Id}.md";
-                    var htmlFilename = Path.Combine(dir, $"{child.Id}.html");
-                    var childPath = Path.Combine(dir, childFilename);
+                    var htmlFilename = Path.Combine(includesDir, $"{child.Id}.html");
+                    var childPath = Path.Combine(includesDir, $"{childFilename}");
                     var childSb = new StringBuilder();
                     string answerMd = "";
 
                     // convert HTML -> MD with pandoc (must be installed to path!)
+                    // https://pandoc.org/MANUAL.html
+                    // The file writing/reading here is hacky but using STDOUT 
+                    // produces different, broken results!
                     File.WriteAllText(htmlFilename, child.Ans);
                     using (var pandoc = new ProcessWrapper("pandoc", $"-t markdown -o {childPath} {htmlFilename} --wrap=none"))
                     {
@@ -115,8 +125,9 @@ namespace Toolchest
                     {
                         Title = child.Faq.TruncateTo(140),
                         Description = child.Ans.TruncateTo(140),
+                        FaqId = child.Id,
                         Date = DateTime.Now.ToString("d"),
-                        Topic = "conceptual",
+                        Topic = "include",
                         MsAuthor = this.MsAuthor,
                         Author = this.Author,
                         AssetId = Guid.NewGuid().ToString("D")
@@ -128,7 +139,7 @@ namespace Toolchest
                     File.WriteAllText(childPath, childSb.ToString());
 
                     // include file in parent
-                    parentSb.Append($"[!INCLUDE [{childMeta.Title}]({childFilename})]\n\n");
+                    parentSb.Append($"[!INCLUDE [{childMeta.Title}](/includes/{childFilename})]\n\n");
                 }
 
                 // write index file:
